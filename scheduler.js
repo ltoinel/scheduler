@@ -237,25 +237,34 @@ module.exports = function(RED) {
 
 							outmsg.topic = node.outtopic;
 							if (proceed >= 2) {							
-								if (((ison == 0) || (ison == 1))) {
+								if (ison == 1) {
 									outmsg.payload = node.outPayload1;
 									ison = 2;
 									outmsg2.payload = (ison - 1).toString();
 									node.send([outmsg, outmsg2]);
 								} else
 								{
+									if (ison == 0){
+										outmsg.payload = node.outPayload1;
+										ison = 2;
+									}
 									outmsg2.payload = (ison - 1).toString();
 									node.send([null, outmsg2]);
 								}
 								
 							} else {
-								if ((ison == 0) || (ison == 2)) {
+								if (ison == 2) {
 									outmsg.payload = node.outPayload2;
 									ison = 1;
 									outmsg2.payload = (ison - 1).toString();
 									node.send([outmsg, outmsg2]);
 								} else
 								{
+  				                   if (ison == 0){
+										outmsg.payload = node.outPayload2;
+                                        ison = 1;
+                                    }
+
 									outmsg2.payload = (ison - 1).toString();
 									node.send([null, outmsg2]);
 								}
