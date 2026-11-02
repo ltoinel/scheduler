@@ -20,6 +20,8 @@ Originally written by Peter Scargill — see http://tech.scargill.net/node-red-s
 
 ## Installation
 
+The node is listed in the [Node-RED Flow Library](https://flows.nodered.org/node/node-red-contrib-scheduler-plus).
+
 From the Node-RED palette manager, search for **node-red-contrib-scheduler-plus**, or from your
 Node-RED user directory (usually `~/.node-red`):
 
