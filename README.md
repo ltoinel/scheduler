@@ -86,6 +86,9 @@ Git hooks (in `.githooks/`, enabled by `npm install`):
 
 ## Changelog
 
+### 1.1.4
+- The package is now under the MIT license (SPDX `MIT`), so the Node-RED Flow Library recognises it.
+
 ### 1.1.3
 - **Breaking change:** the node type is renamed from `scheduler` to `scheduler-plus`, so it no longer clashes with `node-red-contrib-scheduler` and `node-red-contrib-majordomus`. Existing flows show the old nodes as unknown: export the flow, replace `"type": "scheduler"` with `"type": "scheduler-plus"`, then import it again.
 - Added a `LICENSE` file and the `license` field in `package.json` (same terms as before).
@@ -114,5 +117,4 @@ Git hooks (in `.githooks/`, enabled by `npm install`):
 
 ## License
 
-See [LICENSE](LICENSE). Free to use for whatever purpose you like. If you redesign it, please keep the original author's name and link
-(http://tech.scargill.net).
+[MIT](LICENSE). Originally written by Peter Scargill (http://tech.scargill.net), please keep the original author's name and link.
