@@ -1,5 +1,6 @@
 "use strict";
 
+const assert = require("node:assert/strict");
 const EventEmitter = require("node:events");
 const path = require("node:path");
 
@@ -22,7 +23,7 @@ function loadScheduler() {
 		nodes: {
 			createNode() {},
 			registerType(type, ctor) {
-				if (type === "scheduler") {
+				if (type === "scheduler-plus") {
 					Constructor = ctor;
 				}
 			},
@@ -32,6 +33,7 @@ function loadScheduler() {
 		},
 		httpAdmin: {
 			post(route, permission, handler) {
+				assert.equal(route, "/scheduler-plus/:id");
 				adminRoute = handler;
 			}
 		},

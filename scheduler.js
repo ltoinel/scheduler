@@ -168,9 +168,9 @@ module.exports = function (RED) {
 		});
 	}
 
-	RED.nodes.registerType("scheduler", SchedulerNode);
+	RED.nodes.registerType("scheduler-plus", SchedulerNode);
 
-	RED.httpAdmin.post("/scheduler/:id", RED.auth.needsPermission("scheduler.write"), function (req, res) {
+	RED.httpAdmin.post("/scheduler-plus/:id", RED.auth.needsPermission("scheduler-plus.write"), function (req, res) {
 		var node = RED.nodes.getNode(req.params.id);
 		if (node === null || node === undefined) {
 			res.sendStatus(404);
