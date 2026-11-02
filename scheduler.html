@@ -4,387 +4,251 @@
 	many ideas from others - consider it free to use for whatever
 	purpose you like. If you redesign it please remember to drop
 	my name and link in there somewhere. http://tech.scargill.net
-	This software puts out one of two messages on change of state 
-    which could be sent to the MQTT node and can be triggered by
-    the INJECT module (should be triggered once every minute)
+	This software puts out one of two messages on change of state
+	which could be sent to the MQTT node. It evaluates its schedule
+	once every minute.
 -->
 
-<script type="text/x-red" data-template-name="scheduler">
-
-     <div class="form-row">
+<script type="text/html" data-template-name="scheduler">
+	<div class="form-row">
 		<label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
 		<input type="text" id="node-input-name" placeholder="Name">
-     </div>
-
-	 <div class="form-row">
-        <label for="node-input-starttime"><i class="fa fa-clock-o"></i> On Time</label>
-        <select id="node-input-starttime" style="width:73% !important">
-            <option value=  "0">00:00</option>
-            <option value= "15">00:15</option>
-            <option value= "30">00:30</option>
-            <option value= "45">00:45</option>
-            <option value= "60">01:00</option>
-            <option value= "75">01:15</option>
-            <option value= "90">01:30</option>
-            <option value="105">01:45</option>
-            <option value="120">02:00</option>
-            <option value="135">02:15</option>
-            <option value="150">02:30</option>
-            <option value="165">02:45</option>
-            <option value="180">03:00</option>
-            <option value="195">03:15</option>
-            <option value="210">03:30</option>
-            <option value="225">03:45</option>
-            <option value="240">04:00</option>
-            <option value="255">04:15</option>
-            <option value="270">04:30</option>
-            <option value="285">04:45</option>
-            <option value="300">05:00</option>
-            <option value="315">05:15</option>
-            <option value="330">05:30</option>
-            <option value="345">05:45</option>
-            <option value="360">06:00</option>
-            <option value="375">06:15</option>
-            <option value="390">06:30</option>
-            <option value="405">06:45</option>
-            <option value="420">07:00</option>
-            <option value="435">07:15</option>
-            <option value="450">07:30</option>
-            <option value="465">07:45</option>
-            <option value="480">08:00</option>
-            <option value="495">08:15</option>
-            <option value="510">08:30</option>
-            <option value="525">08:45</option>
-            <option value="540">09:00</option>
-            <option value="555">09:15</option>
-            <option value="570">09:30</option>
-            <option value="585">09:45</option>
-            <option value="600">10:00</option>
-            <option value="615">10:15</option>
-            <option value="630">10:30</option>
-            <option value="645">10:45</option>
-            <option value="660">11:00</option>
-            <option value="675">11:15</option>
-            <option value="690">11:30</option>
-            <option value="705">11:45</option>
-            <option value="720">12:00</option>
-            <option value="735">12:15</option>
-            <option value="750">12:30</option>
-            <option value="765">12:45</option>
-            <option value="780">13:00</option>
-            <option value="795">13:15</option>
-            <option value="810">13:30</option>
-            <option value="825">13:45</option>
-            <option value="840">14:00</option>
-            <option value="855">14:15</option>
-            <option value="870">14:30</option>
-            <option value="885">14:45</option>
-            <option value="900">15:00</option>
-            <option value="915">15:15</option>
-            <option value="930">15:30</option>
-            <option value="945">15:45</option>
-            <option value="960">16:00</option>
-            <option value="975">16:15</option>
-            <option value="990">16:30</option>
-            <option value="1005">16:45</option>
-            <option value="1020">17:00</option>
-            <option value="1035">17:15</option>
-            <option value="1050">17:30</option>
-            <option value="1065">17:45</option>
-            <option value="1080">18:00</option>
-            <option value="1095">18:15</option>
-            <option value="1110">18:30</option>
-            <option value="1125">18:45</option>
-            <option value="1140">19:00</option>
-            <option value="1155">19:15</option>
-            <option value="1170">19:30</option>
-            <option value="1185">19:45</option>
-            <option value="1200">20:00</option>
-            <option value="1215">20:15</option>
-            <option value="1230">20:30</option>
-            <option value="1245">20:45</option>
-            <option value="1260">21:00</option>
-            <option value="1275">21:15</option>
-            <option value="1290">21:30</option>
-            <option value="1315">21:45</option>
-            <option value="1330">22:00</option>
-            <option value="1345">22:15</option>
-            <option value="1360">22:30</option>
-            <option value="1375">22:45</option> 
-			<option value="1390">23:00</option>
-            <option value="1405">23:15</option>
-            <option value="1420">23:30</option>
-            <option value="1435">23:45</option>
-            <option value="5000">Dawn</option>
-            <option value="6000">Dusk</option>
-        </select>
-    </div>
-	
-	 <div class="form-row">
-        <label for="node-input-endtime"><i class="fa fa-clock-o"></i> Off Time</label>
-        <select id="node-input-endtime" style="width:73% !important">
-            <option value=  "0">00:00</option>
-            <option value= "15">00:15</option>
-            <option value= "30">00:30</option>
-            <option value= "45">00:45</option>
-            <option value= "60">01:00</option>
-            <option value= "75">01:15</option>
-            <option value= "90">01:30</option>
-            <option value="105">01:45</option>
-            <option value="120">02:00</option>
-            <option value="135">02:15</option>
-            <option value="150">02:30</option>
-            <option value="165">02:45</option>
-            <option value="180">03:00</option>
-            <option value="195">03:15</option>
-            <option value="210">03:30</option>
-            <option value="225">03:45</option>
-            <option value="240">04:00</option>
-            <option value="255">04:15</option>
-            <option value="270">04:30</option>
-            <option value="285">04:45</option>
-            <option value="300">05:00</option>
-            <option value="315">05:15</option>
-            <option value="330">05:30</option>
-            <option value="345">05:45</option>
-            <option value="360">06:00</option>
-            <option value="375">06:15</option>
-            <option value="390">06:30</option>
-            <option value="405">06:45</option>
-            <option value="420">07:00</option>
-            <option value="435">07:15</option>
-            <option value="450">07:30</option>
-            <option value="465">07:45</option>
-            <option value="480">08:00</option>
-            <option value="495">08:15</option>
-            <option value="510">08:30</option>
-            <option value="525">08:45</option>
-            <option value="540">09:00</option>
-            <option value="555">09:15</option>
-            <option value="570">09:30</option>
-            <option value="585">09:45</option>
-            <option value="600">10:00</option>
-            <option value="615">10:15</option>
-            <option value="630">10:30</option>
-            <option value="645">10:45</option>
-            <option value="660">11:00</option>
-            <option value="675">11:15</option>
-            <option value="690">11:30</option>
-            <option value="705">11:45</option>
-            <option value="720">12:00</option>
-            <option value="735">12:15</option>
-            <option value="750">12:30</option>
-            <option value="765">12:45</option>
-            <option value="780">13:00</option>
-            <option value="795">13:15</option>
-            <option value="810">13:30</option>
-            <option value="825">13:45</option>
-            <option value="840">14:00</option>
-            <option value="855">14:15</option>
-            <option value="870">14:30</option>
-            <option value="885">14:45</option>
-            <option value="900">15:00</option>
-            <option value="915">15:15</option>
-            <option value="930">15:30</option>
-            <option value="945">15:45</option>
-            <option value="960">16:00</option>
-            <option value="975">16:15</option>
-            <option value="990">16:30</option>
-            <option value="1005">16:45</option>
-            <option value="1020">17:00</option>
-            <option value="1035">17:15</option>
-            <option value="1050">17:30</option>
-            <option value="1065">17:45</option>
-            <option value="1080">18:00</option>
-            <option value="1095">18:15</option>
-            <option value="1110">18:30</option>
-            <option value="1125">18:45</option>
-            <option value="1140">19:00</option>
-            <option value="1155">19:15</option>
-            <option value="1170">19:30</option>
-            <option value="1185">19:45</option>
-            <option value="1200">20:00</option>
-            <option value="1215">20:15</option>
-            <option value="1230">20:30</option>
-            <option value="1245">20:45</option>
-            <option value="1260">21:00</option>
-            <option value="1275">21:15</option>
-            <option value="1290">21:30</option>
-            <option value="1305">21:45</option>
-            <option value="1320">22:00</option>
-            <option value="1335">22:15</option>
-            <option value="1350">22:30</option>
-            <option value="1365">22:45</option> 
-			<option value="1380">23:00</option>
-            <option value="1395">23:15</option>
-            <option value="1410">23:30</option>
-            <option value="1425">23:45</option>
-            <option value="5000">Dawn</option>
-            <option value="6000">Dusk</option>
-            <option value="10001">1 minute</option>
-            <option value="10002">2 minutes</option>
-            <option value="10005">5 minutes</option>
-            <option value="10010">10 minutes</option>
-            <option value="10015">15 minutes</option>
-            <option value="10030">30 minutes</option>
-            <option value="10060">60 minutes</option>
-            <option value="10090">90 minutes</option>
-            <option value="10120">120 minutes</option>
-			
-        </select>
-    </div>
-
-	<div class="form-row">
-		<label for="node-input-duskoff"><i class="fa fa-clock-o"></i> Dusk Offs</label>
-		<input type="text" id="node-input-duskoff" placeholder="0">
 	</div>
 
 	<div class="form-row">
-		<label for="node-input-dawnoff"><i class="fa fa-clock-o"></i> Dawn Offs</label>
-		<input type="text" id="node-input-dawnoff" placeholder="0">
+		<label for="node-input-starttime"><i class="fa fa-clock-o"></i> On Time</label>
+		<select id="node-input-starttime" style="width:70%"></select>
 	</div>
-	
-	<div class="form-row">	
+
+	<div class="form-row">
+		<label for="node-input-endtime"><i class="fa fa-clock-o"></i> Off Time</label>
+		<select id="node-input-endtime" style="width:70%"></select>
+	</div>
+
+	<div class="form-row">
+		<label for="node-input-dawnoff"><i class="fa fa-clock-o"></i> Dawn Offset</label>
+		<input type="text" id="node-input-dawnoff" placeholder="0" style="width:80px"> mins
+	</div>
+
+	<div class="form-row">
+		<label for="node-input-duskoff"><i class="fa fa-clock-o"></i> Dusk Offset</label>
+		<input type="text" id="node-input-duskoff" placeholder="0" style="width:80px"> mins
+	</div>
+
+	<div class="form-row">
 		<label for="node-input-lat"><i class="fa fa-globe"></i> Latitude</label>
 		<input type="text" id="node-input-lat" placeholder="51.025">
 	</div>
-  
+
 	<div class="form-row">
 		<label for="node-input-lon"><i class="fa fa-globe"></i> Longitude</label>
 		<input type="text" id="node-input-lon" placeholder="-1.4">
 	</div>
 
-  
 	<div class="form-row">
-		<label for="node-input-outtopic"><i class="fa fa-tag"></i> Topic Msg</label>
+		<label for="node-input-outtopic"><i class="fa fa-tasks"></i> Topic</label>
 		<input type="text" id="node-input-outtopic" placeholder="MQTT Topic">
 	</div>
 
 	<div class="form-row">
-		<label for="node-input-outpayload1"><i class="fa fa-tag"></i> ON Msg</label>
+		<label for="node-input-outpayload1"><i class="fa fa-toggle-on"></i> ON Msg</label>
 		<input type="text" id="node-input-outpayload1" placeholder="MQTT Payload">
 	</div>
-  
+
 	<div class="form-row">
-		<label for="node-input-outpayload2"><i class="fa fa-tag"></i> OFF Msg</label>
+		<label for="node-input-outpayload2"><i class="fa fa-toggle-off"></i> OFF Msg</label>
 		<input type="text" id="node-input-outpayload2" placeholder="MQTT Payload">
 	</div>
 
 	<style>
-	input[type=checkbox] { vertical-align:top; position:relative; bottom:1px; } 
+		.scheduler-checks span { display:inline-block; width:55px; margin-left:5px; }
+		.scheduler-checks input[type=checkbox] { width:auto; vertical-align:top; margin:2px 4px 0 0; }
 	</style>
-  
-	<div>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-sun" placeholder="sun" >Sun</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-mon" placeholder="mon" >Mon</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-tue" placeholder="tue" >Tue</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-wed" placeholder="wed" >Wed</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-thu" placeholder="thu" >Thu</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-fri" placeholder="fri" >Fri</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-sat" placeholder="sat" >Sat</span>
-	</div>
-	<br/><br/>
-	<div>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-jan" placeholder="jan" >Jan</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-feb" placeholder="feb" >Feb</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-mar" placeholder="mar" >Mar</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-apr" placeholder="apr" >Apr</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-may" placeholder="may" >May</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-jun" placeholder="jun" >Jun</span>
-		<br/><br/>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-jul" placeholder="jul" >Jul</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-aug" placeholder="aug" >Aug</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-sep" placeholder="sep" >Sep</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-oct" placeholder="oct" >Oct</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-nov" placeholder="nov" >Nov</span>
-		<span style="width: 50px; float: left; margin-left: 5px;"><input type="checkbox" id="node-input-dec" placeholder="dec" >Dec</span>
+
+	<div class="form-row scheduler-checks">
+		<label><i class="fa fa-calendar"></i> Days</label>
+		<div style="display:inline-block; width:70%">
+			<span><input type="checkbox" id="node-input-mon">Mon</span>
+			<span><input type="checkbox" id="node-input-tue">Tue</span>
+			<span><input type="checkbox" id="node-input-wed">Wed</span>
+			<span><input type="checkbox" id="node-input-thu">Thu</span>
+			<span><input type="checkbox" id="node-input-fri">Fri</span>
+			<span><input type="checkbox" id="node-input-sat">Sat</span>
+			<span><input type="checkbox" id="node-input-sun">Sun</span>
+		</div>
 	</div>
 
+	<div class="form-row scheduler-checks">
+		<label><i class="fa fa-calendar"></i> Months</label>
+		<div style="display:inline-block; width:70%">
+			<span><input type="checkbox" id="node-input-jan">Jan</span>
+			<span><input type="checkbox" id="node-input-feb">Feb</span>
+			<span><input type="checkbox" id="node-input-mar">Mar</span>
+			<span><input type="checkbox" id="node-input-apr">Apr</span>
+			<span><input type="checkbox" id="node-input-may">May</span>
+			<span><input type="checkbox" id="node-input-jun">Jun</span>
+			<span><input type="checkbox" id="node-input-jul">Jul</span>
+			<span><input type="checkbox" id="node-input-aug">Aug</span>
+			<span><input type="checkbox" id="node-input-sep">Sep</span>
+			<span><input type="checkbox" id="node-input-oct">Oct</span>
+			<span><input type="checkbox" id="node-input-nov">Nov</span>
+			<span><input type="checkbox" id="node-input-dec">Dec</span>
+		</div>
+	</div>
 </script>
 
-<script type="text/x-red" data-help-name="Scheduler">
-    <p>Uses the suncalc module and timing options to generate a topic and one of two messages from output 1 - checked every minute)</p>
-    <p>The Dawn and Dusk offsets can be both positive (+ve) for minutes later or negative (-ve) for minutes earlier.</p>
-	<p>Output 1 outputs only when the manual input is pressed or when the CHANGE occurs. Output 2 simply sends "1" or "0" to the payload every minute regardless</p>
+<script type="text/html" data-help-name="scheduler">
+	<p>Turns something on and off according to a schedule based on fixed times,
+	dawn/dusk (computed with the <code>suncalc</code> module), days of the week and months.
+	The schedule is evaluated every minute.</p>
+	<h3>Outputs</h3>
+	<ol class="node-ports">
+		<li>Change
+			<dl class="message-properties">
+				<dt>topic <span class="property-type">string</span></dt>
+				<dd>the configured topic.</dd>
+				<dt>payload <span class="property-type">string</span></dt>
+				<dd>the ON or OFF message. Sent only when the state changes
+				or when the button of the node is pressed.</dd>
+			</dl>
+		</li>
+		<li>Status
+			<dl class="message-properties">
+				<dt>topic <span class="property-type">string</span></dt>
+				<dd><code>status</code></dd>
+				<dt>payload <span class="property-type">string</span></dt>
+				<dd><code>"1"</code> when on, <code>"0"</code> when off. Sent every minute.</dd>
+			</dl>
+		</li>
+	</ol>
+	<h3>Details</h3>
+	<p>The node is on from <i>On Time</i> (included) until <i>Off Time</i> (excluded).
+	The period may cross midnight. <i>Off Time</i> can also be a duration counted from <i>On Time</i>.</p>
+	<p>The Dawn and Dusk offsets can be positive for minutes later or negative for minutes earlier.</p>
+	<p>Times are based on the local time zone of the Node-RED server.</p>
+	<p>Nothing is sent on output 1 at start-up: the first evaluation only initialises the state.</p>
 </script>
 
 <script type="text/javascript">
-    RED.nodes.registerType('scheduler',{
-        category: 'advanced-input',
-        color:"#6699ff",
-        defaults: {
-            outtopic: {value:""},
-            outpayload1: {value:""},
-            outpayload2: {value:""},
-		    name: {value:"My Scheduler"},
-            lat: {value:"", required:true, validate:RED.validators.number()},
-            lon: {value:"", required:true, validate:RED.validators.number()},
-            start: {value:"sunrise", required:true},
-            end: {value:"sunset", required:true},
-			starttime: {value:"5000", required: true},
-			endtime: {value:"1435", required: true},
-			duskoff: {value:"0", required: true},
-			dawnoff: {value:"0", required: true},
-			sun: {value:true},
-			mon: {value:true},
-			tue: {value:true},
-			wed: {value:true},
-			thu: {value:true},
-			fri: {value:true},
-			sat: {value:true},
-			jan: {value:true},
-			feb: {value:true},
-			mar: {value:true},
-			apr: {value:true},
-			may: {value:true},
-			jun: {value:true},
-			jul: {value:true},
-			aug: {value:true},
-			sep: {value:true},
-			oct: {value:true},
-			nov: {value:true},
-			dec: {value:true}	
-        },
-        inputs:0,
-        outputs:2,
-        icon: "timer.png",
-        label: function() {
-            return this.name||"scheduler";
-        },
-        labelStyle: function() {
-            return this.name?"node_label_italic":"";
-        },
-        oneditprepare: function() {
-            if (($("#node-input-lat").val() === "") && ($("#node-input-lon").val() === "")) {
-                if ("geolocation" in navigator) {
-                    navigator.geolocation.getCurrentPosition(function(position) {
-                        $("#node-input-lat").val(Number(position.coords.latitude.toFixed(5)));
-                        $("#node-input-lon").val(Number(position.coords.longitude.toFixed(5)));
-                    });
-                }
-            }
-        },
-        button: {
-            onclick: function() {
-                $.ajax({
-                    url: "scheduler/"+this.id,
-                    type:"POST",
-                    success: function(resp) {
-                        RED.notify("Successfully injected: "+label,"success");
-                    },
-                    error: function(jqXHR,textStatus,errorThrown) {
-                        if (jqXHR.status == 404) {
-                            RED.notify("<strong>Error</strong>: scheduler node not deployed","error");
-                        } else if (jqXHR.status == 500) {
-                            RED.notify("<strong>Error</strong>: scheduler reset failed, see log for details.","error");
-                        } else if (jqXHR.status == 0) {
-                            RED.notify("<strong>Error</strong>: no response from server","error");
-                        } else {
-                            RED.notify("<strong>Error</strong>: unexpected error: ("+jqXHR.status+") "+textStatus,"error");
-                        }
-                    }
-                });
-            }
-        }
-    });
+(function () {
+	function pad(n) { return (n < 10 ? "0" : "") + n; }
+
+	function fillTimes(select, withDurations) {
+		select.empty();
+		for (var m = 0; m < 1440; m += 15) {
+			select.append($("<option>").val(String(m)).text(pad(Math.floor(m / 60)) + ":" + pad(m % 60)));
+		}
+		select.append($("<option>").val("5000").text("Dawn"));
+		select.append($("<option>").val("6000").text("Dusk"));
+		if (withDurations) {
+			[1, 2, 5, 10, 15, 30, 60, 90, 120].forEach(function (d) {
+				select.append($("<option>").val(String(10000 + d)).text(d + (d === 1 ? " minute" : " minutes")));
+			});
+		}
+	}
+
+	// Values stored by older versions of this node for 21:45 -> 23:45 were wrong.
+	var LEGACY_TIMES = {
+		"1315": "1305", "1330": "1320", "1345": "1335", "1360": "1350", "1375": "1365",
+		"1390": "1380", "1405": "1395", "1420": "1410", "1435": "1425"
+	};
+	function fixLegacy(v) {
+		v = String(v);
+		return LEGACY_TIMES.hasOwnProperty(v) ? LEGACY_TIMES[v] : v;
+	}
+
+	function validateTime(v) {
+		var t = parseInt(fixLegacy(v), 10);
+		return (t >= 0 && t < 1440 && t % 15 === 0) || t === 5000 || t === 6000 ||
+			[10001, 10002, 10005, 10010, 10015, 10030, 10060, 10090, 10120].indexOf(t) !== -1;
+	}
+
+	RED.nodes.registerType("scheduler", {
+		category: "input",
+		color: "#6699ff",
+		defaults: {
+			name: { value: "My Scheduler" },
+			outtopic: { value: "" },
+			outpayload1: { value: "" },
+			outpayload2: { value: "" },
+			lat: { value: "", required: true, validate: RED.validators.number() },
+			lon: { value: "", required: true, validate: RED.validators.number() },
+			start: { value: "sunrise", required: true },
+			end: { value: "sunset", required: true },
+			starttime: { value: "5000", required: true, validate: validateTime },
+			endtime: { value: "1425", required: true, validate: validateTime },
+			duskoff: { value: "0", required: true, validate: RED.validators.number() },
+			dawnoff: { value: "0", required: true, validate: RED.validators.number() },
+			sun: { value: true },
+			mon: { value: true },
+			tue: { value: true },
+			wed: { value: true },
+			thu: { value: true },
+			fri: { value: true },
+			sat: { value: true },
+			jan: { value: true },
+			feb: { value: true },
+			mar: { value: true },
+			apr: { value: true },
+			may: { value: true },
+			jun: { value: true },
+			jul: { value: true },
+			aug: { value: true },
+			sep: { value: true },
+			oct: { value: true },
+			nov: { value: true },
+			dec: { value: true }
+		},
+		inputs: 0,
+		outputs: 2,
+		outputLabels: ["change", "status"],
+		icon: "timer.png",
+		label: function () {
+			return this.name || "scheduler";
+		},
+		labelStyle: function () {
+			return this.name ? "node_label_italic" : "";
+		},
+		oneditprepare: function () {
+			var start = $("#node-input-starttime");
+			var end = $("#node-input-endtime");
+			fillTimes(start, false);
+			fillTimes(end, true);
+			start.val(fixLegacy(this.starttime || "5000"));
+			end.val(fixLegacy(this.endtime || "1425"));
+
+			if ($("#node-input-lat").val() === "" && $("#node-input-lon").val() === "") {
+				if ("geolocation" in navigator) {
+					navigator.geolocation.getCurrentPosition(function (position) {
+						$("#node-input-lat").val(Number(position.coords.latitude.toFixed(5)));
+						$("#node-input-lon").val(Number(position.coords.longitude.toFixed(5)));
+					});
+				}
+			}
+		},
+		button: {
+			onclick: function () {
+				var label = this.name || "scheduler";
+				$.ajax({
+					url: "scheduler/" + this.id,
+					type: "POST",
+					success: function () {
+						RED.notify("Successfully injected: " + label, "success");
+					},
+					error: function (jqXHR, textStatus) {
+						if (jqXHR.status == 404) {
+							RED.notify("<strong>Error</strong>: scheduler node not deployed", "error");
+						} else if (jqXHR.status == 500) {
+							RED.notify("<strong>Error</strong>: scheduler reset failed, see log for details.", "error");
+						} else if (jqXHR.status == 0) {
+							RED.notify("<strong>Error</strong>: no response from server", "error");
+						} else {
+							RED.notify("<strong>Error</strong>: unexpected error: (" + jqXHR.status + ") " + textStatus, "error");
+						}
+					}
+				});
+			}
+		}
+	});
+})();
 </script>
