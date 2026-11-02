@@ -1,4 +1,4 @@
-name: Publish to npm
+name: Release
 
 # Publishes the package when a GitHub release is published.
 # The release tag must match the version in package.json (e.g. v1.1.0).
