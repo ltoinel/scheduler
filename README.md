@@ -1,5 +1,12 @@
 # Scheduler for Node-RED
 
+[![CI](https://github.com/ltoinel/scheduler/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ltoinel/scheduler/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fltoinel%2Fscheduler%2Fbadges%2Fcoverage.json)](https://github.com/ltoinel/scheduler/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/node-red-contrib-scheduler-plus?logo=npm)](https://www.npmjs.com/package/node-red-contrib-scheduler-plus)
+[![npm downloads](https://img.shields.io/npm/dm/node-red-contrib-scheduler-plus)](https://www.npmjs.com/package/node-red-contrib-scheduler-plus)
+[![Node-RED](https://img.shields.io/badge/Node--RED-%3E%3D1.0-8f0000?logo=nodered)](https://flows.nodered.org/node/node-red-contrib-scheduler-plus)
+[![Node.js](https://img.shields.io/node/v/node-red-contrib-scheduler-plus?logo=nodedotjs)](https://nodejs.org)
+
 A scheduler node for [Node-RED](https://nodered.org) offering better timing facilities than the
 standard inject node: fixed times, dawn and dusk (handy for lighting), days of the week and months.
 
@@ -13,24 +20,18 @@ Originally written by Peter Scargill — see http://tech.scargill.net/node-red-s
 
 ## Installation
 
-> The `node-red-contrib-scheduler` package published on npm is the original version and does not
-> include the fixes of this fork. Install from this repository instead.
-
-From your Node-RED user directory (usually `~/.node-red`):
+From the Node-RED palette manager, search for **node-red-contrib-scheduler-plus**, or from your
+Node-RED user directory (usually `~/.node-red`):
 
 ```sh
-npm install github:ltoinel/scheduler
-```
-
-or from a local clone:
-
-```sh
-git clone https://github.com/ltoinel/scheduler.git
-cd ~/.node-red
-npm install /path/to/scheduler
+npm install node-red-contrib-scheduler-plus
 ```
 
 Then restart Node-RED. The node appears in the **input** category of the palette.
+
+> This is a maintained fork of `node-red-contrib-scheduler`, whose npm package is the original
+> version and does not include the fixes below. Remove it before installing this one: both provide
+> the same `scheduler` node type.
 
 ## Configuration
 
@@ -59,6 +60,28 @@ All times use the **local time zone of the Node-RED server**: make sure it match
 The node status shows the remaining time when on, `off` otherwise, and a red status when there is no
 dawn or dusk on that day (polar day or night at high latitudes).
 
+## Development
+
+```sh
+git clone https://github.com/ltoinel/scheduler.git
+cd scheduler
+npm install        # also enables the git hooks
+npm run lint       # ESLint
+npm test           # unit tests (node:test)
+npm run coverage   # tests + coverage report, fails under 90% of lines
+```
+
+Git hooks (in `.githooks/`, enabled by `npm install`):
+
+- **pre-commit** runs the lint,
+- **pre-push** runs the unit tests.
+
+### Releasing
+
+1. Bump `version` in `package.json` and update the changelog.
+2. Create a GitHub release with the tag `v<version>` (e.g. `v1.1.0`).
+3. The [Publish](.github/workflows/publish.yml) workflow lints, tests and publishes to npm with provenance.
+
 ## Changelog
 
 ### 1.1.0
@@ -69,6 +92,8 @@ dawn or dusk on that day (polar day or night at high latitudes).
 - Fixed the help panel and the button notification.
 - No crash when there is no dawn or dusk (polar regions).
 - Updated to Node-RED >= 1.0 APIs and suncalc 2.x.
+- New SVG icon.
+- Published on npm as `node-red-contrib-scheduler-plus`, with unit tests, lint and CI.
 - **Behaviour change:** Off Time is now excluded (a 07:00–08:00 slot turns off at 08:00, not 08:01).
 
 ### 1.0.0

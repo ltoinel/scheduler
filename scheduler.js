@@ -41,7 +41,7 @@ module.exports = function (RED) {
 		if (isNaN(t)) {
 			return NaN;
 		}
-		return LEGACY_TIMES.hasOwnProperty(t) ? LEGACY_TIMES[t] : t;
+		return Object.prototype.hasOwnProperty.call(LEGACY_TIMES, t) ? LEGACY_TIMES[t] : t;
 	}
 
 	function SchedulerNode(n) {

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="60" viewBox="0 0 40 60">
+  <g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
+    <!-- clock face -->
+    <circle cx="20" cy="30" r="10" stroke-width="3"/>
+    <!-- hands -->
+    <path d="M20 24v6l4 3" stroke-width="2.5"/>
+    <!-- sun rays -->
+    <g stroke-width="2.5">
+      <path d="M20 13.5v-3.5"/>
+      <path d="M20 46.5v3.5"/>
+      <path d="M3.5 30h-3"/>
+      <path d="M36.5 30h3"/>
+      <path d="M8.3 18.3l-2.5-2.5"/>
+      <path d="M31.7 18.3l2.5-2.5"/>
+      <path d="M8.3 41.7l-2.5 2.5"/>
+      <path d="M31.7 41.7l2.5 2.5"/>
+    </g>
+  </g>
+</svg>

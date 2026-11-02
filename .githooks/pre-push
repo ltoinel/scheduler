@@ -1,0 +1,6 @@
+#!/bin/sh
+# Unit tests must pass before pushing (bypass with: git push --no-verify)
+npm test --silent || {
+	echo "pre-push: unit tests failed, push aborted." >&2
+	exit 1
+}
