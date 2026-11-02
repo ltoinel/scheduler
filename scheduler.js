@@ -4,310 +4,184 @@
  * consider it free to use for whatever purpose you like. If you redesign it
  * please remember to drop my name and link in there somewhere.
  * http://tech.scargill.net This software puts out one of two messages on change
- * of state which could be sent to the MQTT node and can be triggered by the
- * INJECT module (should be triggered once every minute)
+ * of state which could be sent to the MQTT node. It evaluates its schedule
+ * once every minute.
  */
 
-module.exports = function(RED) {
+module.exports = function (RED) {
 	"use strict";
-	var SunCalc = require('suncalc');
+	var SunCalc = require("suncalc");
+
+	var MINUTES_PER_DAY = 1440;
+	var DAWN = 5000;
+	var DUSK = 6000;
+	var DURATION_BASE = 10000;
+
+	var DAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+	var MONTHS = ["jan", "feb", "mar", "apr", "may", "jun",
+		"jul", "aug", "sep", "oct", "nov", "dec"];
+
+	// Earlier versions of the editor stored wrong values for the
+	// 21:45 -> 23:45 "On Time" entries (offset by 10 minutes).
+	var LEGACY_TIMES = {
+		1315: 1305, 1330: 1320, 1345: 1335, 1360: 1350, 1375: 1365,
+		1390: 1380, 1405: 1395, 1420: 1410, 1435: 1425
+	};
+
+	function wrap(minutes) {
+		return ((minutes % MINUTES_PER_DAY) + MINUTES_PER_DAY) % MINUTES_PER_DAY;
+	}
+
+	function minutesOfDay(date) {
+		return date.getHours() * 60 + date.getMinutes();
+	}
+
+	function parseTime(value) {
+		var t = parseInt(value, 10);
+		if (isNaN(t)) {
+			return NaN;
+		}
+		return LEGACY_TIMES.hasOwnProperty(t) ? LEGACY_TIMES[t] : t;
+	}
 
 	function SchedulerNode(n) {
 		RED.nodes.createNode(this, n);
 		var node = this;
 
-		node.lat = n.lat;
-		node.lon = n.lon;
-		node.start = n.start;
-		node.end = n.end;
-		node.startt = n.starttime;
-		node.endt = n.endtime;
-		node.duskOff = n.duskoff;
-		node.dawnOff = n.dawnoff;
+		node.lat = Number(n.lat);
+		node.lon = Number(n.lon);
+		node.start = n.start || "sunrise";
+		node.end = n.end || "sunset";
+		node.startt = parseTime(n.starttime);
+		node.endt = parseTime(n.endtime);
+		node.duskOff = Number(n.duskoff) || 0;
+		node.dawnOff = Number(n.dawnoff) || 0;
 		node.outtopic = n.outtopic;
 		node.outPayload1 = n.outpayload1;
 		node.outPayload2 = n.outpayload2;
+		node.days = DAYS.map(function (d) { return !!n[d]; });
+		node.months = MONTHS.map(function (m) { return !!n[m]; });
 
-		node.sun = n.sun;
-		node.mon = n.mon;
-		node.tue = n.tue;
-		node.wed = n.wed;
-		node.thu = n.thu;
-		node.fri = n.fri;
-		node.sat = n.sat;
-		node.jan = n.jan;
-		node.feb = n.feb;
-		node.mar = n.mar;
-		node.apr = n.apr;
-		node.may = n.may;
-		node.jun = n.jun;
-		node.jul = n.jul;
-		node.aug = n.aug;
-		node.sep = n.sep;
-		node.oct = n.oct;
-		node.nov = n.nov;
-		node.dec = n.dec;
+		// null = state unknown (just started): the first evaluation only
+		// initialises the state and does not emit on output 1.
+		var lastState = null;
 
-		var ison = 0;
-		var newEndTime = 0;
+		function resolve(value, dawn, dusk) {
+			if (value === DAWN) { return dawn; }
+			if (value === DUSK) { return dusk; }
+			return value;
+		}
 
-		node
-				.on(
-						"input",
-						function(inmsg) {
-							var now = new Date();
-							var nowOff = -now.getTimezoneOffset() * 60000;
-							var times = SunCalc.getTimes(now, node.lat,
-									node.lon);
-							var nowMillis = Date.UTC(now.getUTCFullYear(), now
-									.getUTCMonth(), now.getUTCDate(), now
-									.getUTCHours(), now.getUTCMinutes(), 1);
-							var midnightMillis = Date.UTC(now.getUTCFullYear(),
-									now.getUTCMonth(), now.getUTCDate(), 0, 1);
-							var startMillis = Date.UTC(times[node.start]
-									.getUTCFullYear(), times[node.start]
-									.getUTCMonth(), times[node.start]
-									.getUTCDate(), times[node.start]
-									.getUTCHours(), times[node.start]
-									.getUTCMinutes());
-							var endMillis = Date.UTC(times[node.end]
-									.getUTCFullYear(), times[node.end]
-									.getUTCMonth(), times[node.end]
-									.getUTCDate(), times[node.end]
-									.getUTCHours(), times[node.end]
-									.getUTCMinutes());
-
-							nowMillis += nowOff;
-							startMillis += nowOff;
-							endMillis += nowOff;
-
-							var outmsg = {
-								payload : "",
-								topic : ""
-							};
-							var outmsg2 = {
-								payload : "",
-								topic : "status"
-							};
-
-							var dawn = (((startMillis - midnightMillis) / 60000) + Number(node.dawnOff)) % 1440;
-							var dusk = (((endMillis - midnightMillis) / 60000) + Number(node.duskOff)) % 1440;
-							var today = (Math
-									.round((nowMillis - midnightMillis) / 60000)) % 1440;
-							var startTime = parseInt(node.startt, 10);
-							var endTime = parseInt(node.endt, 10);
-
-							if (startTime == 5000)
-								startTime = dawn;
-							if (startTime == 6000)
-								startTime = dusk;
-							if (endTime == 5000)
-								endTime = dawn;
-							if (endTime == 6000)
-								endTime = dusk;
-							if (inmsg.payload == "reset")
-								ison = 0;
-
-							var proceed;
-							proceed = 0;
-
-							switch (now.getDay()) {
-							case 0:
-								if (node.sun)
-									proceed++;
-								break;
-							case 1:
-								if (node.mon)
-									proceed++;
-								break;
-							case 2:
-								if (node.tue)
-									proceed++;
-								break;
-							case 3:
-								if (node.wed)
-									proceed++;
-								break;
-							case 4:
-								if (node.thu)
-									proceed++;
-								break;
-							case 5:
-								if (node.fri)
-									proceed++;
-								break;
-							case 6:
-								if (node.sat)
-									proceed++;
-								break;
-							}
-
-							if (proceed)
-								switch (now.getMonth()) {
-								case 0:
-									if (node.jan)
-										proceed++;
-									break;
-								case 1:
-									if (node.feb)
-										proceed++;
-									break;
-								case 2:
-									if (node.mar)
-										proceed++;
-									break;
-								case 3:
-									if (node.apr)
-										proceed++;
-									break;
-								case 4:
-									if (node.may)
-										proceed++;
-									break;
-								case 5:
-									if (node.jun)
-										proceed++;
-									break;
-								case 6:
-									if (node.jul)
-										proceed++;
-									break;
-								case 7:
-									if (node.aug)
-										proceed++;
-									break;
-								case 8:
-									if (node.sep)
-										proceed++;
-									break;
-								case 9:
-									if (node.oct)
-										proceed++;
-									break;
-								case 10:
-									if (node.nov)
-										proceed++;
-									break;
-								case 11:
-									if (node.dec)
-										proceed++;
-									break;
-								}
-
-							if (proceed >= 2)
-								proceed = 1;
-							else
-								proceed = 0;
-
-							newEndTime = endTime;
-							if (endTime > 10000)
-								newEndTime = startTime + (endTime - 10000);
-
-							if (proceed) // have to handle midnight wrap
-							{
-								if (startTime <= newEndTime) {
-									if ((today >= startTime)
-											&& (today <= newEndTime))
-										proceed++;
-								} else {
-									if ((today >= startTime)
-											|| (today <= newEndTime))
-										proceed++;
-								}
-							}
-
-							var duration = 0;
-							if (proceed >= 2) {
-								if (today <= newEndTime)
-									duration = newEndTime - today;
-								else
-									duration = newEndTime + (1440 - today);
-								node.status({
-									fill : "yellow",
-									shape : "dot",
-									text : "on for " + duration + " mins"
-								});
-							} else {
-								node.status({
-									fill : "blue",
-									shape : "dot",
-									text : "off"
-								});
-							}
-
-							outmsg.topic = node.outtopic;
-							if (proceed >= 2) {							
-								if (ison == 1) {
-									outmsg.payload = node.outPayload1;
-									ison = 2;
-									outmsg2.payload = (ison - 1).toString();
-									node.send([outmsg, outmsg2]);
-								} else
-								{
-									if (ison == 0){
-										outmsg.payload = node.outPayload1;
-										ison = 2;
-									}
-									outmsg2.payload = (ison - 1).toString();
-									node.send([null, outmsg2]);
-								}
-								
-							} else {
-								if (ison == 2) {
-									outmsg.payload = node.outPayload2;
-									ison = 1;
-									outmsg2.payload = (ison - 1).toString();
-									node.send([outmsg, outmsg2]);
-								} else
-								{
-  				                   if (ison == 0){
-										outmsg.payload = node.outPayload2;
-                                        ison = 1;
-                                    }
-
-									outmsg2.payload = (ison - 1).toString();
-									node.send([null, outmsg2]);
-								}
-							}
-						});
-
-		var tock = setTimeout(function() {
-			node.emit("input", {});
-		}, 2000); // wait 2 secs before starting to let things settle down -
-					// e.g. UI connect
-
-		var tick = setInterval(function() {
-			node.emit("input", {});
-		}, 60000); // trigger every 60 secs
-
-		node.on("close", function() {
-			if (tock) {
-				clearTimeout(tock);
+		function evaluate(now) {
+			// utcOffset pins the computation to the local calendar day of the server
+			var times = SunCalc.getTimes(now, node.lat, node.lon, 0, -now.getTimezoneOffset());
+			var sunrise = times[node.start];
+			var sunset = times[node.end];
+			var dawn = NaN;
+			var dusk = NaN;
+			if (sunrise && !isNaN(sunrise.getTime())) {
+				dawn = wrap(minutesOfDay(sunrise) + node.dawnOff);
 			}
-			if (tick) {
-				clearInterval(tick);
+			if (sunset && !isNaN(sunset.getTime())) {
+				dusk = wrap(minutesOfDay(sunset) + node.duskOff);
 			}
+
+			var startTime = resolve(node.startt, dawn, dusk);
+			var endTime;
+			if (node.endt > DURATION_BASE) {
+				endTime = wrap(startTime + (node.endt - DURATION_BASE));
+			} else {
+				endTime = resolve(node.endt, dawn, dusk);
+			}
+
+			if (isNaN(startTime) || isNaN(endTime)) {
+				// e.g. no sunrise/sunset at this latitude today
+				return { on: false, error: "no dawn/dusk today" };
+			}
+
+			if (!node.days[now.getDay()] || !node.months[now.getMonth()]) {
+				return { on: false };
+			}
+
+			// Active interval is [startTime, endTime), handling midnight wrap.
+			var today = minutesOfDay(now);
+			var on;
+			if (startTime <= endTime) {
+				on = today >= startTime && today < endTime;
+			} else {
+				on = today >= startTime || today < endTime;
+			}
+			return { on: on, remaining: on ? wrap(endTime - today) : 0 };
+		}
+
+		node.on("input", function (inmsg, send, done) {
+			send = send || function () { node.send.apply(node, arguments); };
+			var forced = !!(inmsg && inmsg.payload === "reset");
+			var result;
+			try {
+				result = evaluate(new Date());
+			} catch (err) {
+				if (done) { done(err); } else { node.error(err, inmsg); }
+				return;
+			}
+
+			if (result.error) {
+				node.status({ fill: "red", shape: "ring", text: result.error });
+			} else if (result.on) {
+				node.status({ fill: "yellow", shape: "dot", text: "on for " + result.remaining + " mins" });
+			} else {
+				node.status({ fill: "blue", shape: "dot", text: "off" });
+			}
+
+			var changed = lastState !== null && lastState !== result.on;
+			lastState = result.on;
+
+			var outmsg = null;
+			if (forced || changed) {
+				outmsg = {
+					topic: node.outtopic,
+					payload: result.on ? node.outPayload1 : node.outPayload2
+				};
+			}
+			var outmsg2 = { topic: "status", payload: result.on ? "1" : "0" };
+
+			send([outmsg, outmsg2]);
+			if (done) { done(); }
 		});
 
+		// wait 2 secs before starting to let things settle down - e.g. UI connect
+		var tock = setTimeout(function () {
+			tock = null;
+			node.receive({});
+		}, 2000);
+
+		var tick = setInterval(function () {
+			node.receive({});
+		}, 60000); // trigger every 60 secs
+
+		node.on("close", function () {
+			if (tock) {
+				clearTimeout(tock);
+				tock = null;
+			}
+			clearInterval(tick);
+		});
 	}
 
-	RED.httpAdmin.post("/scheduler/:id", RED.auth
-			.needsPermission("scheduler.write"), function(req, res) {
+	RED.nodes.registerType("scheduler", SchedulerNode);
+
+	RED.httpAdmin.post("/scheduler/:id", RED.auth.needsPermission("scheduler.write"), function (req, res) {
 		var node = RED.nodes.getNode(req.params.id);
-		if (node != null) {
-			try {
-				node.emit("input", {
-					payload : "reset"
-				});
-				res.send(200);
-			} catch (err) {
-				res.send(500);
-				node.error("Inject failed:" + err);
-			}
-		} else {
-			res.send(404);
+		if (node === null || node === undefined) {
+			res.sendStatus(404);
+			return;
+		}
+		try {
+			node.receive({ payload: "reset" });
+			res.sendStatus(200);
+		} catch (err) {
+			res.sendStatus(500);
+			node.error("Inject failed: " + err);
 		}
 	});
-
-	RED.nodes.registerType("scheduler", SchedulerNode);
-}
+};
