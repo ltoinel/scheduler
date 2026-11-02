@@ -44,7 +44,7 @@
     "node-red": {
         "version": ">=1.0.0",
         "nodes": {
-            "scheduler": "scheduler.js"
+            "scheduler-plus": "scheduler.js"
         }
     },
     "devDependencies": {

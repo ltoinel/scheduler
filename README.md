@@ -85,6 +85,7 @@ Git hooks (in `.githooks/`, enabled by `npm install`):
 ## Changelog
 
 ### 1.1.3
+- **Breaking change:** the node type is renamed from `scheduler` to `scheduler-plus`, so it no longer clashes with `node-red-contrib-scheduler` and `node-red-contrib-majordomus`. Existing flows show the old nodes as unknown: export the flow, replace `"type": "scheduler"` with `"type": "scheduler-plus"`, then import it again.
 - Added a `LICENSE` file and the `license` field in `package.json` (same terms as before).
 - Added an example flow, available in Node-RED under Import > Examples.
 

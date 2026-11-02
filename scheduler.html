@@ -9,7 +9,7 @@
 	once every minute.
 -->
 
-<script type="text/html" data-template-name="scheduler">
+<script type="text/html" data-template-name="scheduler-plus">
 	<div class="form-row">
 		<label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
 		<input type="text" id="node-input-name" placeholder="Name">
@@ -97,7 +97,7 @@
 	</div>
 </script>
 
-<script type="text/html" data-help-name="scheduler">
+<script type="text/html" data-help-name="scheduler-plus">
 	<p>Turns something on and off according to a schedule based on fixed times,
 	dawn/dusk (computed with the <code>suncalc</code> module), days of the week and months.
 	The schedule is evaluated every minute.</p>
@@ -163,7 +163,7 @@
 			[10001, 10002, 10005, 10010, 10015, 10030, 10060, 10090, 10120].indexOf(t) !== -1;
 	}
 
-	RED.nodes.registerType("scheduler", {
+	RED.nodes.registerType("scheduler-plus", {
 		category: "input",
 		color: "#6699ff",
 		defaults: {
@@ -230,7 +230,7 @@
 			onclick: function () {
 				var label = this.name || "scheduler";
 				$.ajax({
-					url: "scheduler/" + this.id,
+					url: "scheduler-plus/" + this.id,
 					type: "POST",
 					success: function () {
 						RED.notify("Successfully injected: " + label, "success");

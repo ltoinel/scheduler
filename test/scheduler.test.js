@@ -295,9 +295,9 @@ describe("editor (scheduler.html)", () => {
 	const html = fs.readFileSync(path.join(__dirname, "..", "scheduler.html"), "utf8");
 
 	it("registers the help under the node type name", () => {
-		assert.match(html, /data-help-name="scheduler"/);
-		assert.match(html, /data-template-name="scheduler"/);
-		assert.match(html, /registerType\("scheduler"/);
+		assert.match(html, /data-help-name="scheduler-plus"/);
+		assert.match(html, /data-template-name="scheduler-plus"/);
+		assert.match(html, /registerType\("scheduler-plus"/);
 	});
 
 	it("does not reference an undefined label in the button callback", () => {
