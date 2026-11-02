@@ -80,7 +80,7 @@ Git hooks (in `.githooks/`, enabled by `npm install`):
 
 1. Bump `version` in `package.json` and update the changelog.
 2. Create a GitHub release with the tag `v<version>` (e.g. `v1.1.0`).
-3. The [Publish](.github/workflows/publish.yml) workflow lints, tests and publishes to npm with provenance.
+3. The [Release](.github/workflows/release.yml) workflow lints, tests and publishes to npm with provenance.
 
 ## Changelog
 
