@@ -1,7 +1,7 @@
 # Scheduler for Node-RED
 
-[![CI](https://github.com/ltoinel/scheduler/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ltoinel/scheduler/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fltoinel%2Fscheduler%2Fbadges%2Fcoverage.json)](https://github.com/ltoinel/scheduler/actions/workflows/ci.yml)
+[![CI](https://github.com/ltoinel/node-red-contrib-scheduler-plus/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/ltoinel/node-red-contrib-scheduler-plus/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fltoinel%2Fnode-red-contrib-scheduler-plus%2Fbadges%2Fcoverage.json)](https://github.com/ltoinel/node-red-contrib-scheduler-plus/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/node-red-contrib-scheduler-plus?logo=npm)](https://www.npmjs.com/package/node-red-contrib-scheduler-plus)
 [![npm downloads](https://img.shields.io/npm/dm/node-red-contrib-scheduler-plus)](https://www.npmjs.com/package/node-red-contrib-scheduler-plus)
 [![Node-RED](https://img.shields.io/badge/Node--RED-%3E%3D1.0-8f0000?logo=nodered)](https://flows.nodered.org/node/node-red-contrib-scheduler-plus)
@@ -63,7 +63,7 @@ dawn or dusk on that day (polar day or night at high latitudes).
 ## Development
 
 ```sh
-git clone https://github.com/ltoinel/scheduler.git
+git clone https://github.com/ltoinel/node-red-contrib-scheduler-plus.git
 cd scheduler
 npm install        # also enables the git hooks
 npm run lint       # ESLint
@@ -83,6 +83,9 @@ Git hooks (in `.githooks/`, enabled by `npm install`):
 3. The [Release](.github/workflows/release.yml) workflow lints, tests and publishes to npm with provenance.
 
 ## Changelog
+
+### 1.1.2
+- Repository URLs updated to `ltoinel/node-red-contrib-scheduler-plus` (fixes npm provenance on publish).
 
 ### 1.1.1
 - The npm publishing workflow is renamed to `release.yml`.
