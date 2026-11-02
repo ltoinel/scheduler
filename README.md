@@ -84,6 +84,9 @@ Git hooks (in `.githooks/`, enabled by `npm install`):
 
 ## Changelog
 
+### 1.1.1
+- The npm publishing workflow is renamed to `release.yml`.
+
 ### 1.1.0
 - Fixed wrong On Time values between 21:45 and 23:45 (offset by 10 minutes); existing flows are migrated automatically.
 - Fixed a one-minute delay and negative values in the time computation.
